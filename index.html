@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Приглашение посмотреть фильм 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(145deg, #fff0f5 0%, #ffe4ec 50%, #ffd9e6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 720px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(6px);
+            border-radius: 48px;
+            padding: 40px 30px 50px;
+            box-shadow: 0 25px 50px rgba(255, 150, 180, 0.25),
+                        0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .page {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        h1 {
+            font-size: 2.4rem;
+            font-weight: 600;
+            color: #b3405a;
+            letter-spacing: -0.5px;
+            text-shadow: 2px 2px 0 rgba(255, 200, 215, 0.5);
+        }
+
+        .gif-box {
+            width: 100%;
+            max-width: 420px;
+            border-radius: 36px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(255, 130, 160, 0.3);
+            background: #ffeef4;
+            transition: transform 0.2s;
+        }
+
+        .gif-box img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .btn {
+            border: none;
+            padding: 18px 52px;
+            font-size: 1.6rem;
+            font-weight: 600;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1);
+            box-shadow: 0 8px 18px rgba(255, 120, 150, 0.25);
+            letter-spacing: 0.5px;
+            position: relative;
+            user-select: none;
+        }
+
+        .btn-yes {
+            background: #ff9eb5;
+            color: white;
+            box-shadow: 0 10px 22px rgba(255, 105, 140, 0.4);
+        }
+
+        .btn-yes:hover {
+            background: #ff86a5;
+            transform: scale(1.04);
+        }
+
+        .btn-yes:active {
+            transform: scale(0.96);
+        }
+
+        .btn-no {
+            background: #d9d9d9;
+            color: #6b6b6b;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-no:hover {
+            background: #cacaca;
+        }
+
+        .btn-no.shrink {
+            transition: all 0.25s ease-out;
+            pointer-events: none;
+        }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .movie-card {
+            background: white;
+            border-radius: 32px;
+            padding: 22px 10px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #a1304a;
+            box-shadow: 0 8px 18px rgba(255, 140, 170, 0.2);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+        }
+
+        .movie-card:hover {
+            background: #fff5f8;
+            border-color: #ffb0c8;
+            transform: translateY(-4px);
+            box-shadow: 0 14px 26px rgba(255, 120, 160, 0.3);
+        }
+
+        .movie-card:active {
+            transform: scale(0.96);
+        }
+
+        .final-text {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #b3405a;
+            line-height: 1.4;
+            text-shadow: 2px 2px 0 #ffe2ec;
+            margin-top: 6px;
+        }
+
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 999;
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff7b9c;
+            font-size: 24px;
+            user-select: none;
+            animation: fall linear forwards;
+            opacity: 0.9;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 500px) {
+            h1 { font-size: 1.8rem; }
+            .btn { padding: 14px 32px; font-size: 1.3rem; }
+            .final-text { font-size: 1.7rem; }
+            .container { padding: 30px 18px 40px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="hearts-container" id="heartsContainer"></div>
+
+<div class="container" id="app">
+
+    <!-- Страница 1: Приглашение -->
+    <div class="page active" id="pageInvite">
+        <h1>Посмотрим фильм вместе? 🥰</h1>
+        <div class="gif-box">
+            <img src="https://media1.tenor.com/m/Dixl45imipcAAAAC/couple-fofo.gif" alt="Милые котята обнимаются">
+        </div>
+        <div class="buttons">
+            <button class="btn btn-yes" id="btnYes">Да</button>
+            <button class="btn btn-no" id="btnNo">Нет</button>
+        </div>
+    </div>
+
+    <!-- Страница 2: Выбор фильма -->
+    <div class="page" id="pageMovies">
+        <h1>Что будем смотреть? 🍿</h1>
+        <div class="movie-grid">
+            <div class="movie-card" data-movie="Арчер">Арчер</div>
+            <div class="movie-card" data-movie="Южный парк">Южный парк</div>
+            <div class="movie-card" data-movie="Сумерки">Сумерки</div>
+            <div class="movie-card" data-movie="Выберем другое вместе">Выберем другое вместе</div>
+        </div>
+        <div class="gif-box" style="max-width: 340px; margin-top: 10px;">
+            <img src="https://media1.tenor.com/m/RKts25diH6gAAAAd/mochi-kiss.gif" alt="Котята целуются">
+        </div>
+    </div>
+
+    <!-- Страница 3: Финал -->
+    <div class="page" id="pageFinal">
+        <div class="gif-box">
+            <img src="https://media1.tenor.com/m/4HJQz8KjvHYAAAAC/hug-cats.gif" alt="Котята обнимаются">
+        </div>
+        <div class="final-text">Урааа!!! <br> Я тебя люблю, доброе утро, котёнок ❤️</div>
+    </div>
+
+</div>
+
+<script>
+    (function() {
+        const pageInvite = document.getElementById('pageInvite');
+        const pageMovies = document.getElementById('pageMovies');
+        const pageFinal = document.getElementById('pageFinal');
+        const btnYes = document.getElementById('btnYes');
+        const btnNo = document.getElementById('btnNo');
+        const heartsContainer = document.getElementById('heartsContainer');
+
+        function spawnHearts() {
+            const heartCount = 40;
+            const hearts = ['❤️', '💖', '💗', '💓', '💕', '💞', '🌸', '✨'];
+
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+
+                heart.style.left = Math.random() * 100 + '%';
+                const size = Math.random() * 22 + 16;
+                heart.style.fontSize = size + 'px';
+                const delay = Math.random() * 0.8;
+                heart.style.animationDelay = delay + 's';
+                const duration = Math.random() * 1.2 + 1.8;
+                heart.style.animationDuration = duration + 's';
+
+                heartsContainer.appendChild(heart);
+
+                setTimeout(() => {
+                    heart.remove();
+                }, (duration + delay) * 1000 + 300);
+            }
+        }
+
+        btnYes.addEventListener('click', function() {
+            spawnHearts();
+
+            setTimeout(() => {
+                pageInvite.classList.remove('active');
+                pageMovies.classList.add('active');
+            }, 350);
+        });
+
+        let noClickCount = 0;
+        btnNo.addEventListener('click', function() {
+            noClickCount++;
+            const currentScale = Math.max(0, 1 - noClickCount * 0.25);
+            btnNo.style.transform = `scale(${currentScale})`;
+            btnNo.style.opacity = currentScale;
+
+            if (currentScale <= 0.01) {
+                btnNo.style.display = 'none';
+            }
+        });
+
+        const movieCards = document.querySelectorAll('.movie-card');
+        movieCards.forEach(card => {
+            card.addEventListener('click', function() {
+                spawnHearts();
+
+                setTimeout(() => {
+                    pageMovies.classList.remove('active');
+                    pageFinal.classList.add('active');
+                }, 350);
+            });
+        });
+    })();
+</script>
+
+</body>
+</html>
